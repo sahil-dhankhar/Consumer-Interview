@@ -96,15 +96,16 @@ button{font-family:inherit;cursor:pointer}
 <body>
 <div id="app"></div>
 <script>
-// Updated discussion guide - June 2026 revised
+const CHAR_SPEED=70; // ms per character for typing (was 35, now 4x slower at 140... adjusted to 70 for readability)
+
 const QS=[
 {id:"q1",type:"open",section:"Warm-Up",text:"Think about the last time a brand or company invited you to take a survey. What went through your mind? Did you do it?",probes:["What was your gut reaction \u2014 before you even looked at the details?","If you skipped it: was it a conscious decision or did you just not bother? What would have had to be different?","If you did it: what was the thing that made you say yes?"]},
-{id:"q2",type:"open",section:"Barriers",text:"When you decide not to participate in a survey, what are the main reasons? Walk me through what kills it for you.",probes:["Is it about time? Trust? The reward? The topic? Something else?","Is there a difference between \u2018I would never do this\u2019 vs. \u2018I might, but not right now\u2019?"],transition:"Thanks for sharing that. Let\u2019s dig a bit deeper \u2014"},
-{id:"q3",type:"rank",section:"Barriers",text:"If you had to rank what matters most in your decision \u2014 is it more about WHO is asking, WHAT they\u2019re offering, WHEN they ask, or HOW they frame it?",inst:"Tap in order of importance (1 = most important)",opts:[{id:"who",lb:"WHO is asking",ds:"The brand or sender"},{id:"what",lb:"WHAT they\u2019re offering",ds:"The incentive or reward"},{id:"when",lb:"WHEN they ask",ds:"The timing and context"},{id:"how",lb:"HOW they frame it",ds:"The messaging and positioning"}],transition:"Got it. Now let\u2019s shift gears and talk about incentives \u2014"},
-{id:"q4",type:"open",section:"Incentives",text:"Let\u2019s talk about incentives. When a survey offers you something in return, what kind of reward actually moves the needle for you? What feels worth your time vs. what feels insulting?",probes:["Has a cash incentive ever worked for you? At what amount does cash start to feel worth it?","What about non-cash incentives \u2014 experiences, access to something, credits? Does that change anything?"],transition:"That\u2019s really helpful. Let me test that with something concrete \u2014"},
+{id:"q2",type:"open",section:"Barriers",text:"When you decide not to participate in a survey, what are the main reasons? Walk me through what kills it for you.",probes:["Is it about time? Trust? The reward? The topic? Something else?","Is there a difference between \u2018I would never do this\u2019 vs. \u2018I might, but not right now\u2019?"]},
+{id:"q3",type:"rank",section:"Barriers",text:"If you had to rank what matters most in your decision \u2014 is it more about WHO is asking, WHAT they\u2019re offering, WHEN they ask, or HOW they frame it?",inst:"Tap in order of importance (1 = most important)",opts:[{id:"who",lb:"WHO is asking",ds:"The brand or sender"},{id:"what",lb:"WHAT they\u2019re offering",ds:"The incentive or reward"},{id:"when",lb:"WHEN they ask",ds:"The timing and context"},{id:"how",lb:"HOW they frame it",ds:"The messaging and positioning"}]},
+{id:"q4",type:"open",section:"Incentives",text:"Let\u2019s talk about incentives. When a survey offers you something in return, what kind of reward actually moves the needle for you? What feels worth your time vs. what feels insulting?",probes:["Has a cash incentive ever worked for you? At what amount does cash start to feel worth it?","What about non-cash incentives \u2014 experiences, access to something, credits? Does that change anything?"]},
 {id:"q5",type:"rank",section:"Incentives",text:"I\u2019m going to read you a list of incentive options for a 30-minute survey about products you buy regularly. Rank them from most to least appealing.",inst:"Tap in order of preference (1 = most appealing)",opts:[{id:"a",lb:"$50 cash (Venmo / PayPal)"},{id:"b",lb:"$50 in DoorDash or Amazon credits"},{id:"c",lb:"Two tickets to a local sports game or concert"},{id:"d",lb:"A wellness day pass (spa, gym, yoga) for you + 1"},{id:"e",lb:"$25 cash + tickets to a local event of your choice"},{id:"f",lb:"Free coffee every day for a week at your regular cafe"},{id:"g",lb:"Entry into a raffle for a high-value experience (e.g., World Cup final trip, weekend getaway)"}]},
 {id:"q5b",type:"open",section:"Incentives",text:"__DYNAMIC__",probes:[],dynamic:true},
-{id:"q6",type:"open",section:"Moment & Context",text:"Think about your typical week. Are there specific moments where you\u2019d actually be open to spending 30 minutes on a survey \u2014 times when you\u2019re idle, waiting, or winding down?",probes:["What about right after you\u2019ve bought something \u2014 like a new product you were excited about? Would a survey about that product feel different from a random one?","Does it matter if you\u2019d do it on your phone vs. desktop?"],transition:"Okay, last section \u2014 I want to show you something and get your reaction."},
+{id:"q6",type:"open",section:"Moment & Context",text:"Think about your typical week. Are there specific moments where you\u2019d actually be open to spending 30 minutes on a survey \u2014 times when you\u2019re idle, waiting, or winding down?",probes:["What about right after you\u2019ve bought something \u2014 like a new product you were excited about? Would a survey about that product feel different from a random one?","Does it matter if you\u2019d do it on your phone vs. desktop?"]},
 {id:"q7",type:"select",section:"Framing & Credibility",text:"I\u2019m going to show you three versions of the same survey invitation. Which one would you be most likely to click on?",opts:[{id:"o1",lb:"Option 1",tx:"Fill out a quick survey and earn $50.",cl:"r"},{id:"o2",lb:"Option 2",tx:"Take a 20-minute survey about [category] and earn $50 cash.",cl:"a"},{id:"o3",lb:"Option 3",tx:"Help us make better products for your dog \u2014 join our insider panel. Takes 20 minutes.",cl:"g"}]},
 {id:"q7b",type:"open",section:"Framing & Credibility",text:"What\u2019s different about the one you picked? What does it signal to you about the brand?",probes:["Does removing the cash incentive from Option 3 make it less appealing, or does it not matter?"]},
 {id:"q8",type:"open",section:"Framing & Credibility",text:"Two quick follow-ups. First: does it matter how long a survey is? Where\u2019s the line where you\u2019d say \u2018that\u2019s too long\u2019? And second: does it matter who\u2019s asking? Would you respond differently if the survey came from a brand you love vs. an unknown research company?",probes:["What if the invite came from a specific person \u2014 like your barista at your usual Starbucks or local coffee shop?","What about data privacy \u2014 does knowing how your answers will be used matter?"]}
@@ -113,18 +114,42 @@ const QS=[
 const IC={msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',snd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',micX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .76-.13 1.49-.35 2.17"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',vol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',volX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',chk:'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>',arr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>',bk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>',bar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'};
 function ic(n,w=16){return`<span style="display:inline-flex;width:${w}px;height:${w}px">${IC[n]}</span>`}
 
-// TTS
-let bestVoice=null,curAudio=null;
+// TTS - FIX: cancel BOTH sources before starting either one
+let bestVoice=null,curAudio=null,ttsSource=null;
 function loadVoices(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices();if(!vs.length)return;const prefs=["Microsoft Aria","Google US English","Samantha"];for(const p of prefs){const v=vs.find(v=>v.name.includes(p));if(v){bestVoice=v;return}}bestVoice=vs.find(v=>v.lang.startsWith("en"))||vs[0]}
 if(window.speechSynthesis){speechSynthesis.onvoiceschanged=loadVoices;setTimeout(loadVoices,100)}
+
+function stopAllAudio(){
+  ttsSource=null;
+  if(curAudio){curAudio.pause();curAudio.currentTime=0;curAudio=null}
+  if(window.speechSynthesis)speechSynthesis.cancel();
+}
+
 async function speak(text){
   if(!S.tts)return;
-  try{const r=await fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
-  if(r.headers.get("content-type")?.includes("audio")){const blob=await r.blob();if(curAudio)curAudio.pause();curAudio=new Audio(URL.createObjectURL(blob));curAudio.play().catch(()=>{});return}}catch{}
-  if(!window.speechSynthesis)return;speechSynthesis.cancel();loadVoices();
-  const u=new SpeechSynthesisUtterance(text);u.voice=bestVoice;u.rate=0.95;u.pitch=1.05;speechSynthesis.speak(u);
+  stopAllAudio(); // Always kill everything before starting
+  try{
+    const r=await fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
+    const ct=r.headers.get("content-type")||"";
+    if(ct.includes("audio")){
+      const blob=await r.blob();
+      const audio=new Audio(URL.createObjectURL(blob));
+      curAudio=audio;
+      ttsSource="openai";
+      audio.play().catch(()=>{});
+      return; // OpenAI succeeded, do NOT fall through
+    }
+    // API returned JSON (fallback signal), use browser
+  }catch{
+    // API failed, use browser
+  }
+  // Browser TTS fallback - only if OpenAI didn't work
+  if(!window.speechSynthesis||ttsSource==="openai")return;
+  loadVoices();
+  ttsSource="browser";
+  const u=new SpeechSynthesisUtterance(text);u.voice=bestVoice;u.rate=0.95;u.pitch=1.05;
+  speechSynthesis.speak(u);
 }
-function stopSpeak(){if(curAudio){curAudio.pause();curAudio=null}if(window.speechSynthesis)speechSynthesis.cancel()}
 
 // STT continuous
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
@@ -139,27 +164,28 @@ function toggleMic(){
   rec.start();S.listening=true;draw();
 }
 
-// Claude probe with context
+// Claude probe
 async function getProbe(q,resp,probes,context){
   try{const r=await fetch("/api/probe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,response:resp,probes,context})});if(!r.ok)return fallbackProbe(resp,probes);const d=await r.json();return d.probe||null}catch{return fallbackProbe(resp,probes)}
 }
 function fallbackProbe(resp,probes){return resp.trim().split(/\s+/).length<15&&probes&&probes[0]?probes[0]:null}
-
-// Build conversation context from previous answers
 function getContext(){return S.ans.map(a=>`Q: ${a.q}\nA: ${a.a}`).join("\n\n")}
 
-let S={scr:"welcome",qi:0,ans:[],msgs:[],input:"",pc:0,cp:null,animI:-1,ok:false,tts:true,listening:false,thinking:false,allRes:[],insights:null,insL:false,lastRank:null};
+// FIX 1: Added qStart to track where current question's messages begin
+let S={scr:"welcome",qi:0,ans:[],msgs:[],input:"",pc:0,cp:null,animI:-1,ok:false,tts:true,listening:false,thinking:false,allRes:[],insights:null,insL:false,lastRank:null,qStart:0};
 let typT=0,typI=null,rkS={ranked:[],qid:null};
 const $=id=>document.getElementById(id);
 
-function startType(text,idx){S.animI=idx;S.ok=false;typT=Date.now();clearInterval(typI);typI=setInterval(()=>{if(Math.floor((Date.now()-typT)/35)>=text.length){clearInterval(typI);S.animI=-1;S.ok=true}draw()},50);speak(text)}
-function getTyped(full){return S.animI===-1?full.length:Math.min(Math.floor((Date.now()-typT)/35),full.length)}
+function startType(text,idx){S.animI=idx;S.ok=false;typT=Date.now();clearInterval(typI);typI=setInterval(()=>{if(Math.floor((Date.now()-typT)/CHAR_SPEED)>=text.length){clearInterval(typI);S.animI=-1;S.ok=true}draw()},60);speak(text)}
+function getTyped(full){return S.animI===-1?full.length:Math.min(Math.floor((Date.now()-typT)/CHAR_SPEED),full.length)}
 
-function start(){S={scr:"iv",qi:0,ans:[],msgs:[{r:"ai",t:QS[0].text}],input:"",pc:0,cp:null,animI:0,ok:false,tts:S.tts,listening:false,thinking:false,allRes:S.allRes,insights:null,insL:false,lastRank:null};rkS={ranked:[],qid:null};startType(QS[0].text,0);draw()}
+function start(){S={scr:"iv",qi:0,ans:[],msgs:[{r:"ai",t:QS[0].text}],input:"",pc:0,cp:null,animI:0,ok:false,tts:S.tts,listening:false,thinking:false,allRes:S.allRes,insights:null,insL:false,lastRank:null,qStart:0};rkS={ranked:[],qid:null};startType(QS[0].text,0);draw()}
 
 async function submit(){
-  if(!S.input.trim()||!S.ok)return;const resp=S.input.trim();
-  S.input="";S.ok=false;S.listening=false;finalT="";
+  if(!S.input.trim()||!S.ok)return;
+  const resp=S.input.trim();
+  // FIX 2: Clear input COMPLETELY
+  S.input="";finalT="";S.ok=false;S.listening=false;
   if(rec)try{rec.stop()}catch{}
   S.msgs.push({r:"u",t:resp});draw();
   const q=QS[S.qi];
@@ -169,38 +195,36 @@ async function submit(){
     S.thinking=false;
     if(probe){S.pc++;S.cp=probe;S.msgs.push({r:"ai",t:probe});startType(probe,S.msgs.length-1);draw();return}
   }
-  const allU=S.msgs.filter(m=>m.r==="u").map(m=>m.t);
-  doAdv(allU.join(" | "));
+  // FIX 1: Only collect user messages from CURRENT question (since qStart)
+  const currentUserMsgs=S.msgs.slice(S.qStart).filter(m=>m.r==="u").map(m=>m.t);
+  doAdv(currentUserMsgs.join(" | "));
 }
 
 function onIx(result){
   const str=Array.isArray(result)?result.map((r,i)=>`${i+1}. ${r}`).join(", "):result;
-  // Save ranking for dynamic Q5b
   if(Array.isArray(result))S.lastRank={top:result[0],bottom:result[result.length-1]};
-  S.msgs.push({r:"u",t:str});doAdv(str);
+  S.msgs.push({r:"u",t:str});
+  // For interactive, just save the result directly (no accumulation issue)
+  doAdv(str);
 }
 
 function doAdv(resp){
   const q=QS[S.qi];S.ans.push({qid:q.id,q:q.text,section:q.section,a:resp});S.pc=0;S.cp=null;
   if(S.qi<QS.length-1){
     S.qi++;let nq=QS[S.qi];
-    // Dynamic Q5b: reference actual ranking
     let qText=nq.text;
     if(nq.dynamic&&S.lastRank){
-      qText=`Interesting choices! You put "${S.lastRank.top}" at the top and "${S.lastRank.bottom}" at the bottom. Tell me \u2014 why does ${S.lastRank.top.toLowerCase().includes("cash")?"cash":"that"} win for you? And what puts ${S.lastRank.bottom.toLowerCase().includes("raffle")?"the raffle":"that last one"} at the bottom?`;
+      qText=`Interesting choices! You put "${S.lastRank.top}" at the top and "${S.lastRank.bottom}" at the bottom. Tell me \u2014 why does that one win for you? And what puts the last one at the bottom?`;
     }
-    // Add transition from previous section if available
-    let fullText=qText;
-    if(nq.transition&&QS[S.qi-1]?.section!==nq.section){
-      // Section change: skip transition for now, handled by the question itself
-    }
-    S.msgs.push({r:"ai",t:fullText});
-    startType(fullText,S.msgs.length-1);
+    // FIX 1: Mark where this question's messages start
+    S.qStart=S.msgs.length;
+    S.msgs.push({r:"ai",t:qText});
+    startType(qText,S.msgs.length-1);
   }else finish();
   draw();
 }
 
-async function finish(){S.scr="thx";stopSpeak();clearInterval(typI);const rec={id:"r_"+Date.now(),ts:new Date().toISOString(),answers:S.ans};try{await fetch("/api/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(rec)})}catch(e){console.error(e)}draw()}
+async function finish(){S.scr="thx";stopAllAudio();clearInterval(typI);const rec={id:"r_"+Date.now(),ts:new Date().toISOString(),answers:S.ans};try{await fetch("/api/save",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(rec)})}catch(e){console.error(e)}draw()}
 
 window.rkTap=function(id){const q=QS[S.qi];rkS.ranked.push(q.opts.find(o=>o.id===id));if(rkS.ranked.length===q.opts.length)setTimeout(()=>onIx(rkS.ranked.map(r=>r.lb)),400);draw()};
 
@@ -225,7 +249,7 @@ function draw(){
   if(S.ok&&q.type==="rank"){if(rkS.qid!==q.id)rkS={ranked:[],qid:q.id};const rem=q.opts.filter(o=>!rkS.ranked.find(r=>r.id===o.id));ix='<div class="ix">';if(q.inst)ix+=`<p class="ix-l">${q.inst}</p>`;if(rkS.ranked.length){ix+='<div class="ix-l" style="color:var(--teal);font-weight:600">Your ranking</div>';rkS.ranked.forEach((it,i)=>{ix+=`<div class="ri ri-d"><span class="rn">${i+1}</span>${it.lb}</div>`});if(rem.length)ix+='<button class="rst" onclick="rkS.ranked=[];draw()">Start over</button>'}if(rem.length){ix+=`<div class="ix-l" style="margin-top:.4rem">${rkS.ranked.length===0?"Tap the most important one first":"Tap #"+(rkS.ranked.length+1)}</div>`;rem.forEach(it=>{ix+=`<div class="ri" onclick="rkTap('${it.id}')">${it.lb}${it.ds?`<span class="rd">${it.ds}</span>`:""}</div>`})}ix+='</div>'}
   if(S.ok&&q.type==="select"){ix='<div class="ix"><p class="ix-l">Tap the one you\u2019d click on</p>';q.opts.forEach(o=>{const c={r:"oc-r",a:"oc-a",g:"oc-g"}[o.cl];ix+=`<button class="oc ${c}" onclick="onIx('${o.lb}: &quot;${o.tx.replace(/'/g,"\\'")}&quot;')"><div class="ol">${o.lb}</div><div class="ot">"${o.tx}"</div></button>`});ix+='</div>'}
   let inp="";if(q.type==="open"){inp=`<div class="inp"><div class="inp-in">${SR?`<button class="mic ${S.listening?"mic-on":"mic-off"}" onclick="toggleMic()">${S.listening?ic("micX",20):ic("mic",20)}</button>`:""}<textarea class="ti" id="ti" placeholder="${S.ok?(S.listening?"Speaking\u2026 tap mic when done":"Type or tap mic to respond\u2026"):"Listening\u2026"}" ${S.ok?"":"disabled"} rows="3" oninput="S.input=this.value" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();submit()}">${S.input||""}</textarea><button class="snd" onclick="submit()" ${!S.input?.trim()||!S.ok?"disabled":""}>${ic("snd",20)}</button></div>${S.listening?'<p class="mic-st">Recording \u2014 speak naturally, tap mic when finished</p>':""}</div>`}
-  el.innerHTML=`<div class="scr" style="background:var(--bg)"><div class="hdr"><div class="hdr-in"><div class="hdr-ico">${ic("msg",14)}</div><div><div class="hdr-sec">${q.section}</div><div class="hdr-q">Question ${S.qi+1} of ${QS.length}</div></div><div class="hdr-r"><button class="ib ${S.tts?"on":""}" onclick="S.tts=!S.tts;if(!S.tts)stopSpeak();draw()">${S.tts?ic("vol",16):ic("volX",16)}</button></div></div><div class="prog"><div class="prog-f" style="width:${pct}%"></div></div></div><div class="chat"><div class="chat-in">${ms}${ix}<div id="end"></div></div></div>${inp}</div>`;
+  el.innerHTML=`<div class="scr" style="background:var(--bg)"><div class="hdr"><div class="hdr-in"><div class="hdr-ico">${ic("msg",14)}</div><div><div class="hdr-sec">${q.section}</div><div class="hdr-q">Question ${S.qi+1} of ${QS.length}</div></div><div class="hdr-r"><button class="ib ${S.tts?"on":""}" onclick="S.tts=!S.tts;if(!S.tts)stopAllAudio();draw()">${S.tts?ic("vol",16):ic("volX",16)}</button></div></div><div class="prog"><div class="prog-f" style="width:${pct}%"></div></div></div><div class="chat"><div class="chat-in">${ms}${ix}<div id="end"></div></div></div>${inp}</div>`;
   setTimeout(()=>{$("end")?.scrollIntoView({behavior:"smooth"});if(S.ok&&q.type==="open"){const t=$("ti");if(t){t.value=S.input||"";t.focus()}}},30);
 }
 const params=new URLSearchParams(location.search);
