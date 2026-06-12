@@ -100,11 +100,11 @@ const QS=[
 {id:"q3",type:"rank",section:"Barriers",text:"If you had to rank what matters most in your decision \u2014 is it more about WHO is asking, WHAT they\u2019re offering, WHEN they ask, or HOW they frame it?",inst:"Tap in order of importance (1 = most important)",opts:[{id:"who",lb:"WHO is asking",ds:"The brand or sender"},{id:"what",lb:"WHAT they\u2019re offering",ds:"The incentive or reward"},{id:"when",lb:"WHEN they ask",ds:"The timing and context"},{id:"how",lb:"HOW they frame it",ds:"The messaging and positioning"}]},
 {id:"q4",type:"open",section:"Incentives",text:"Let\u2019s talk about incentives. When a survey offers you something in return, what kind of reward actually moves the needle for you? What feels worth your time vs. what feels insulting?",probes:["Has a cash incentive ever worked for you? At what amount does cash start to feel worth it?","What about non-cash incentives \u2014 experiences, access to something, credits? Does that change anything?"]},
 {id:"q5",type:"rank",section:"Incentives",text:"I\u2019m going to read you a list of incentive options for a 30-minute survey about products you buy regularly. Rank them from most to least appealing.",inst:"Tap in order of preference (1 = most appealing)",opts:[{id:"a",lb:"$50 cash (Venmo / PayPal)"},{id:"b",lb:"$50 in DoorDash or Amazon credits"},{id:"c",lb:"Two tickets to a local sports game or concert"},{id:"d",lb:"A wellness day pass (spa, gym, yoga) for you + 1"},{id:"e",lb:"$25 cash + tickets to a local event of your choice"},{id:"f",lb:"Free coffee every day for a week at your regular cafe"},{id:"g",lb:"Entry into a raffle for a high-value experience (e.g., World Cup final trip, weekend getaway)"}]},
-{id:"q5b",type:"open",section:"Incentives",text:"Tell me about your top pick \u2014 why does that one win? And your bottom pick \u2014 why does that fall flat?",probes:[],dynamic:true},
-{id:"q6",type:"open",section:"Moment & Context",text:"Think about your typical week. Are there specific moments where you\u2019d actually be open to spending 30 minutes on a survey \u2014 times when you\u2019re idle, waiting, or winding down?",probes:["What about right after you\u2019ve bought something \u2014 like a new product you were excited about? Would a survey about that product feel different?","Does it matter if you\u2019d do it on your phone vs. desktop?"]},
+{id:"q5b",type:"open",section:"Incentives",text:"Tell me about your top pick \u2014 why does that one win? And your bottom pick \u2014 why does that fall flat?",probes:["What specifically draws you to that top pick over the others?","What feels off about the bottom one?"],dynamic:true},
+{id:"q6",type:"open",section:"Moment & Context",text:"Think about your typical week. Are there specific moments where you\u2019d actually be open to spending 30 minutes on a survey \u2014 times when you\u2019re idle, waiting, or winding down?",probes:["What about right after you\u2019ve bought something \u2014 like a new product you were excited about?","Does it matter if you\u2019d do it on your phone vs. desktop?"]},
 {id:"q7",type:"select",section:"Framing & Credibility",text:"I\u2019m going to show you three versions of the same survey invitation. Which one would you be most likely to click on?",opts:[{id:"o1",lb:"Option 1",tx:"Fill out a quick survey and earn $50.",cl:"r"},{id:"o2",lb:"Option 2",tx:"Take a 20-minute survey about [category] and earn $50 cash.",cl:"a"},{id:"o3",lb:"Option 3",tx:"Help us make better products for your dog \u2014 join our insider panel. Takes 20 minutes.",cl:"g"}]},
 {id:"q7b",type:"open",section:"Framing & Credibility",text:"What\u2019s different about the one you picked? What does it signal to you about the brand?",probes:["Does removing the cash incentive from Option 3 make it less appealing, or does it not matter?"]},
-{id:"q8",type:"open",section:"Framing & Credibility",text:"Two quick follow-ups. First: does it matter how long a survey is? Where\u2019s the line where you\u2019d say \u2018that\u2019s too long\u2019? And second: does it matter who\u2019s asking? Would you respond differently if the survey came from a brand you love vs. an unknown research company?",probes:["What if the invite came from a specific person \u2014 like your barista at your usual Starbucks or local coffee shop?","What about data privacy \u2014 does knowing how your answers will be used matter?"]}
+{id:"q8",type:"open",section:"Framing & Credibility",text:"Two quick follow-ups. First: does it matter how long a survey is? Where\u2019s the line where you\u2019d say \u2018that\u2019s too long\u2019? And second: does it matter who\u2019s asking?",probes:["What if the invite came from a specific person \u2014 like your barista at your usual Starbucks?","What about data privacy \u2014 does knowing how your answers will be used matter?"]}
 ];
 const IC={msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',snd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',micX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .76-.13 1.49-.35 2.17"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',vol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',volX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',chk:'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>',arr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>',bk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>',bar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'};
 function ic(n,w=16){return`<span style="display:inline-flex;width:${w}px;height:${w}px">${IC[n]}</span>`}
@@ -132,20 +132,18 @@ const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let rec=null,finalT="";
 function toggleMic(){if(!SR){alert("Voice input not supported. Use Chrome or Edge.");return}if(S.listening){rec?.stop();S.listening=false;draw();return}finalT=S.input||"";rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang="en-US";rec.onresult=e=>{let f="",interim="";for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript}if(f)finalT+=f;S.input=finalT+interim;draw()};rec.onend=()=>{if(S.listening)try{rec.start()}catch{S.listening=false;draw()}};rec.onerror=e=>{if(e.error!=="no-speech"){S.listening=false;draw()}};rec.start();S.listening=true;draw()}
 
-// CLAUDE PROBE - with logging
-async function getProbe(q,resp,probes,ctx){
-  console.log("[PROBE] Calling /api/probe...");
+async function getProbe(q,resp,probes,ctx,probeCount){
+  console.log("[PROBE] Calling /api/probe... probeCount:",probeCount);
   try{
-    const r=await fetch("/api/probe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,response:resp,probes,context:ctx})});
+    const r=await fetch("/api/probe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,response:resp,probes,context:ctx,probeCount})});
     console.log("[PROBE] Status:",r.status);
     if(!r.ok){console.log("[PROBE] Failed with",r.status);return null}
     const d=await r.json();
-    console.log("[PROBE] Result:",d);
+    console.log("[PROBE] Result:",d.probe?d.probe.substring(0,60):"ADVANCE");
     return d.probe||null;
   }catch(e){console.log("[PROBE] Error:",e);return null}
 }
 
-// CLAUDE TRANSITION - with logging
 async function getTransition(userResp,nextQ,ctx,section,prevSection){
   console.log("[TRANSITION] Calling /api/transition...");
   try{
@@ -153,7 +151,7 @@ async function getTransition(userResp,nextQ,ctx,section,prevSection){
     console.log("[TRANSITION] Status:",r.status);
     if(!r.ok){console.log("[TRANSITION] Failed with",r.status);return null}
     const d=await r.json();
-    console.log("[TRANSITION] Result:",d);
+    console.log("[TRANSITION] Result:",d.text?d.text.substring(0,80):"NULL");
     return d.text||null;
   }catch(e){console.log("[TRANSITION] Error:",e);return null}
 }
@@ -164,7 +162,6 @@ let S={scr:"welcome",qi:0,ans:[],msgs:[],input:"",pc:0,cp:null,animI:-1,ok:false
 let rkS={ranked:[],qid:null};
 const $=id=>document.getElementById(id);
 
-// FIX 1: First question no longer pre-renders. Shows "Thinking..." then types with audio in sync.
 async function start(){
   S={scr:"iv",qi:0,ans:[],msgs:[],input:"",pc:0,cp:null,animI:-1,ok:false,tts:S.tts,listening:false,thinking:true,allRes:S.allRes,insights:null,insL:false,lastRank:null,qStart:0};
   rkS={ranked:[],qid:null};
@@ -175,6 +172,7 @@ async function start(){
   await speakAndType(text,0);
 }
 
+// CRITICAL CHANGE: For open questions, MANDATORY 1 probe minimum. Force probe even if Claude says ADVANCE on first response.
 async function submit(){
   if(!S.input.trim()||!S.ok)return;
   const resp=S.input.trim();
@@ -182,11 +180,37 @@ async function submit(){
   if(rec)try{rec.stop()}catch{}
   S.msgs.push({r:"u",t:resp});draw();
   const q=QS[S.qi];
-  if(q.type==="open"&&q.probes?.length&&S.pc<2){
-    S.thinking=true;draw();
-    const probe=await getProbe(S.cp||q.text,resp,q.probes.slice(S.pc),getContext());
-    S.thinking=false;
-    if(probe){S.pc++;S.cp=probe;S.msgs.push({r:"ai",t:probe});await speakAndType(probe,S.msgs.length-1);draw();return}
+
+  if(q.type==="open"&&q.probes?.length){
+    // ENFORCE: probe at least once (pc<1 means we haven't probed yet)
+    if(S.pc<1){
+      S.thinking=true;draw();
+      let probe=await getProbe(S.cp||q.text,resp,q.probes,getContext(),S.pc);
+      S.thinking=false;
+      // If Claude said ADVANCE but it's our first probe, force a probe from the list
+      if(!probe&&q.probes.length>0){
+        console.log("[PROBE] Forcing mandatory first probe");
+        probe=q.probes[0];
+      }
+      if(probe){
+        S.pc++;S.cp=probe;
+        S.msgs.push({r:"ai",t:probe});
+        await speakAndType(probe,S.msgs.length-1);
+        draw();return;
+      }
+    }
+    // Allow optional second probe if Claude wants it
+    else if(S.pc<2){
+      S.thinking=true;draw();
+      const probe=await getProbe(S.cp||q.text,resp,q.probes.slice(S.pc),getContext(),S.pc);
+      S.thinking=false;
+      if(probe){
+        S.pc++;S.cp=probe;
+        S.msgs.push({r:"ai",t:probe});
+        await speakAndType(probe,S.msgs.length-1);
+        draw();return;
+      }
+    }
   }
   const cMsgs=S.msgs.slice(S.qStart).filter(m=>m.r==="u").map(m=>m.t);
   await doAdv(cMsgs.join(" | "));
@@ -208,14 +232,13 @@ async function doAdv(resp){
   const nq=QS[S.qi];
   S.qStart=S.msgs.length;
   let nextQText=nq.text;
-  if(nq.dynamic&&S.lastRank){nextQText=`You put "${S.lastRank.top}" at the top and "${S.lastRank.bottom}" at the bottom. Why does that top one win for you, and what puts the last one at the bottom?`}
-  // Get Claude transition - ALWAYS show thinking while waiting
+  if(nq.dynamic&&S.lastRank){nextQText=`Why does "${S.lastRank.top}" win for you, and what puts "${S.lastRank.bottom}" at the bottom?`}
   S.thinking=true;draw();
   console.log("[ADVANCE] Getting transition for Q"+(S.qi+1));
   const transition=await getTransition(resp,nextQText,getContext(),nq.section,q.section);
   S.thinking=false;
   const finalText=transition||nextQText;
-  console.log("[ADVANCE] Using text:",finalText.substring(0,80)+"...",transition?"[CLAUDE]":"[FALLBACK]");
+  console.log("[ADVANCE] Using:",transition?"[CLAUDE]":"[FALLBACK]");
   S.msgs.push({r:"ai",t:finalText});
   await speakAndType(finalText,S.msgs.length-1);
   draw();
