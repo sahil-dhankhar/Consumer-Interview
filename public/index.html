@@ -93,7 +93,7 @@ button{font-family:inherit;cursor:pointer}
 <body>
 <div id="app"></div>
 <script>
-const CHAR_SPEED=65;
+const CHAR_SPEED=50;
 const QS=[
 {id:"q1",type:"open",section:"Warm-Up",text:"Think about the last time a brand or company invited you to take a survey. What went through your mind? Did you do it?",probes:["What was your gut reaction \u2014 before you even looked at the details?","If you skipped it: was it a conscious decision or did you just not bother? What would have had to be different?","If you did it: what was the thing that made you say yes?"]},
 {id:"q2",type:"open",section:"Barriers",text:"When you decide not to participate in a survey, what are the main reasons? Walk me through what kills it for you.",probes:["Is it about time? Trust? The reward? The topic? Something else?","Is there a difference between \u2018I would never do this\u2019 vs. \u2018I might, but not right now\u2019?"]},
@@ -109,29 +109,16 @@ const QS=[
 const IC={msg:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',snd:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>',mic:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',micX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="1" y1="1" x2="23" y2="23"/><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2c0 .76-.13 1.49-.35 2.17"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>',vol:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',volX:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>',chk:'<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>',arr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>',bk:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>',bar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'};
 function ic(n,w=16){return`<span style="display:inline-flex;width:${w}px;height:${w}px">${IC[n]}</span>`}
 
-// ─── TTS: Prefetch audio THEN start typing in sync ───
 let curAudio=null,bestVoice=null;
 function loadVoices(){if(!window.speechSynthesis)return;const vs=speechSynthesis.getVoices();if(!vs.length)return;const prefs=["Microsoft Aria","Google US English","Samantha"];for(const p of prefs){const v=vs.find(v=>v.name.includes(p));if(v){bestVoice=v;return}}bestVoice=vs.find(v=>v.lang.startsWith("en"))||vs[0]}
 if(window.speechSynthesis){speechSynthesis.onvoiceschanged=loadVoices;setTimeout(loadVoices,100)}
 function stopAll(){if(curAudio){curAudio.pause();curAudio=null}if(window.speechSynthesis)speechSynthesis.cancel()}
 
-// Prefetch audio, then start typing + audio together
 async function speakAndType(text,msgIdx){
   stopAll();
   if(!S.tts){beginTyping(text,msgIdx);return}
-  // 1. Fetch audio first
   let audio=null;
-  try{
-    const r=await fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});
-    const ct=r.headers.get("content-type")||"";
-    if(ct.includes("audio")){
-      const blob=await r.blob();
-      audio=new Audio(URL.createObjectURL(blob));
-      // Wait for audio to be ready
-      await new Promise((ok,fail)=>{audio.oncanplaythrough=ok;audio.onerror=fail;setTimeout(ok,3000);audio.load()});
-    }
-  }catch{}
-  // 2. NOW start both together
+  try{const r=await fetch("/api/tts",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text})});const ct=r.headers.get("content-type")||"";if(ct.includes("audio")){const blob=await r.blob();audio=new Audio(URL.createObjectURL(blob));await new Promise((ok)=>{audio.oncanplaythrough=ok;audio.onerror=ok;setTimeout(ok,3000);audio.load()})}}catch(e){console.log("TTS fetch error:",e)}
   beginTyping(text,msgIdx);
   if(audio){curAudio=audio;audio.play().catch(()=>{})}
   else if(window.speechSynthesis){loadVoices();const u=new SpeechSynthesisUtterance(text);u.voice=bestVoice;u.rate=0.95;u.pitch=1.05;speechSynthesis.speak(u)}
@@ -141,35 +128,52 @@ let typT=0,typI=null;
 function beginTyping(text,idx){S.animI=idx;S.ok=false;typT=Date.now();clearInterval(typI);typI=setInterval(()=>{if(Math.floor((Date.now()-typT)/CHAR_SPEED)>=text.length){clearInterval(typI);S.animI=-1;S.ok=true}draw()},60);draw()}
 function getTyped(full){return S.animI===-1?full.length:Math.min(Math.floor((Date.now()-typT)/CHAR_SPEED),full.length)}
 
-// ─── STT ───
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
 let rec=null,finalT="";
-function toggleMic(){
-  if(!SR){alert("Voice input not supported. Use Chrome or Edge.");return}
-  if(S.listening){rec?.stop();S.listening=false;draw();return}
-  finalT=S.input||"";rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang="en-US";
-  rec.onresult=e=>{let f="",interim="";for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript}if(f)finalT+=f;S.input=finalT+interim;draw()};
-  rec.onend=()=>{if(S.listening)try{rec.start()}catch{S.listening=false;draw()}};
-  rec.onerror=e=>{if(e.error!=="no-speech"){S.listening=false;draw()}};
-  rec.start();S.listening=true;draw();
+function toggleMic(){if(!SR){alert("Voice input not supported. Use Chrome or Edge.");return}if(S.listening){rec?.stop();S.listening=false;draw();return}finalT=S.input||"";rec=new SR();rec.continuous=true;rec.interimResults=true;rec.lang="en-US";rec.onresult=e=>{let f="",interim="";for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)f+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript}if(f)finalT+=f;S.input=finalT+interim;draw()};rec.onend=()=>{if(S.listening)try{rec.start()}catch{S.listening=false;draw()}};rec.onerror=e=>{if(e.error!=="no-speech"){S.listening=false;draw()}};rec.start();S.listening=true;draw()}
+
+// CLAUDE PROBE - with logging
+async function getProbe(q,resp,probes,ctx){
+  console.log("[PROBE] Calling /api/probe...");
+  try{
+    const r=await fetch("/api/probe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,response:resp,probes,context:ctx})});
+    console.log("[PROBE] Status:",r.status);
+    if(!r.ok){console.log("[PROBE] Failed with",r.status);return null}
+    const d=await r.json();
+    console.log("[PROBE] Result:",d);
+    return d.probe||null;
+  }catch(e){console.log("[PROBE] Error:",e);return null}
 }
 
-// ─── CLAUDE: Probe within a question ───
-async function getProbe(q,resp,probes,ctx){
-  try{const r=await fetch("/api/probe",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({question:q,response:resp,probes,context:ctx})});if(!r.ok)return null;const d=await r.json();return d.probe||null}catch{return null}
-}
-// ─── CLAUDE: Transition between questions (acknowledge + next Q) ───
+// CLAUDE TRANSITION - with logging
 async function getTransition(userResp,nextQ,ctx,section,prevSection){
-  try{const r=await fetch("/api/transition",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userResponse:userResp,nextQuestion:nextQ,context:ctx,section,prevSection})});if(!r.ok)return null;const d=await r.json();return d.text||null}catch{return null}
+  console.log("[TRANSITION] Calling /api/transition...");
+  try{
+    const r=await fetch("/api/transition",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userResponse:userResp,nextQuestion:nextQ,context:ctx,section,prevSection})});
+    console.log("[TRANSITION] Status:",r.status);
+    if(!r.ok){console.log("[TRANSITION] Failed with",r.status);return null}
+    const d=await r.json();
+    console.log("[TRANSITION] Result:",d);
+    return d.text||null;
+  }catch(e){console.log("[TRANSITION] Error:",e);return null}
 }
+
 function getContext(){return S.ans.map(a=>`Q: ${a.q}\nA: ${a.a}`).join("\n\n")}
 
-// ─── STATE ───
 let S={scr:"welcome",qi:0,ans:[],msgs:[],input:"",pc:0,cp:null,animI:-1,ok:false,tts:true,listening:false,thinking:false,allRes:[],insights:null,insL:false,lastRank:null,qStart:0};
 let rkS={ranked:[],qid:null};
 const $=id=>document.getElementById(id);
 
-function start(){S={scr:"iv",qi:0,ans:[],msgs:[{r:"ai",t:QS[0].text}],input:"",pc:0,cp:null,animI:0,ok:false,tts:S.tts,listening:false,thinking:false,allRes:S.allRes,insights:null,insL:false,lastRank:null,qStart:0};rkS={ranked:[],qid:null};speakAndType(QS[0].text,0);draw()}
+// FIX 1: First question no longer pre-renders. Shows "Thinking..." then types with audio in sync.
+async function start(){
+  S={scr:"iv",qi:0,ans:[],msgs:[],input:"",pc:0,cp:null,animI:-1,ok:false,tts:S.tts,listening:false,thinking:true,allRes:S.allRes,insights:null,insL:false,lastRank:null,qStart:0};
+  rkS={ranked:[],qid:null};
+  draw();
+  const text=QS[0].text;
+  S.thinking=false;
+  S.msgs.push({r:"ai",t:text});
+  await speakAndType(text,0);
+}
 
 async function submit(){
   if(!S.input.trim()||!S.ok)return;
@@ -178,14 +182,12 @@ async function submit(){
   if(rec)try{rec.stop()}catch{}
   S.msgs.push({r:"u",t:resp});draw();
   const q=QS[S.qi];
-  // Probe within current question
   if(q.type==="open"&&q.probes?.length&&S.pc<2){
     S.thinking=true;draw();
     const probe=await getProbe(S.cp||q.text,resp,q.probes.slice(S.pc),getContext());
     S.thinking=false;
     if(probe){S.pc++;S.cp=probe;S.msgs.push({r:"ai",t:probe});await speakAndType(probe,S.msgs.length-1);draw();return}
   }
-  // Advance: collect only current question's responses
   const cMsgs=S.msgs.slice(S.qStart).filter(m=>m.r==="u").map(m=>m.t);
   await doAdv(cMsgs.join(" | "));
 }
@@ -205,16 +207,15 @@ async function doAdv(resp){
   S.qi++;
   const nq=QS[S.qi];
   S.qStart=S.msgs.length;
-  // Dynamic Q5b
   let nextQText=nq.text;
-  if(nq.dynamic&&S.lastRank){
-    nextQText=`You put "${S.lastRank.top}" at the top and "${S.lastRank.bottom}" at the bottom. Why does that top one win for you, and what puts the last one at the bottom?`;
-  }
-  // Get conversational transition from Claude
+  if(nq.dynamic&&S.lastRank){nextQText=`You put "${S.lastRank.top}" at the top and "${S.lastRank.bottom}" at the bottom. Why does that top one win for you, and what puts the last one at the bottom?`}
+  // Get Claude transition - ALWAYS show thinking while waiting
   S.thinking=true;draw();
+  console.log("[ADVANCE] Getting transition for Q"+(S.qi+1));
   const transition=await getTransition(resp,nextQText,getContext(),nq.section,q.section);
   S.thinking=false;
   const finalText=transition||nextQText;
+  console.log("[ADVANCE] Using text:",finalText.substring(0,80)+"...",transition?"[CLAUDE]":"[FALLBACK]");
   S.msgs.push({r:"ai",t:finalText});
   await speakAndType(finalText,S.msgs.length-1);
   draw();
@@ -234,7 +235,7 @@ function draw(){
   if(S.scr==="admin"){let cards="";if(!S.allRes.length)cards='<div style="text-align:center;padding:4rem 0;color:var(--tx3)"><p>No responses yet</p></div>';else S.allRes.forEach((r,i)=>{let body="";r.answers.forEach(a=>{body+=`<div class="qa"><div class="st">${a.section}</div><div class="qt">${a.q}</div><div class="at">${a.a}</div></div>`});cards+=`<details class="rc"><summary>Respondent ${i+1} <span style="font-size:.7rem;color:var(--tx3);margin-left:.5rem">${new Date(r.ts).toLocaleString()}</span></summary><div class="rc-body">${body}</div></details>`});const ins=S.insights?`<div class="ins-box"><h2>Aggregate Insights</h2><pre>${S.insights}</pre></div>`:"";const btn=S.allRes.length>=2?`<button class="btn-ins" onclick="genIns()" ${S.insL?"disabled":""}>${S.insL?"Analyzing...":ic("bar",16)+" Generate Insights"}</button>`:"";el.innerHTML=`<div class="scr" style="background:var(--bg)"><div class="admin"><button class="bk" onclick="S.scr='welcome';draw()">${ic("bk",14)} Back</button><div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:1.5rem"><div><h1>Interview Responses</h1><p class="cnt">${S.allRes.length} completed</p></div>${btn}</div>${ins}${cards}</div></div>`;return}
   const q=QS[S.qi];const pct=(S.qi/QS.length)*100;
   let ms="";S.msgs.forEach((m,i)=>{if(m.r==="ai"){const anim=i===S.animI;const txt=anim?m.t.slice(0,getTyped(m.t)):m.t;ms+=`<div class="m m-ai"><div class="b b-ai"><div class="ai-h"><div class="ai-d">${ic("msg",9)}</div><span class="ai-l">AI Moderator</span>${anim?'<div class="dots"><span></span><span></span><span></span></div>':''}${anim&&S.tts?'<div class="wave"><span></span><span></span><span></span><span></span></div>':''}</div><p>${txt}${anim?'<span class="cur"></span>':''}</p></div></div>`}else ms+=`<div class="m m-u"><div class="b b-u"><p>${m.t}</p></div></div>`});
-  if(S.thinking)ms+='<div class="m m-ai"><div class="b b-ai"><div style="font-size:.7rem;color:var(--tx3)">Thinking...</div></div></div>';
+  if(S.thinking)ms+='<div class="m m-ai"><div class="b b-ai"><div style="font-size:.75rem;color:var(--tx3);padding:.25rem 0">Thinking\u2026</div></div></div>';
   let ix="";
   if(S.ok&&q.type==="rank"){if(rkS.qid!==q.id)rkS={ranked:[],qid:q.id};const rem=q.opts.filter(o=>!rkS.ranked.find(r=>r.id===o.id));ix='<div class="ix">';if(q.inst)ix+=`<p class="ix-l">${q.inst}</p>`;if(rkS.ranked.length){ix+='<div class="ix-l" style="color:var(--teal);font-weight:600">Your ranking</div>';rkS.ranked.forEach((it,i)=>{ix+=`<div class="ri ri-d"><span class="rn">${i+1}</span>${it.lb}</div>`});if(rem.length)ix+='<button class="rst" onclick="rkS.ranked=[];draw()">Start over</button>'}if(rem.length){ix+=`<div class="ix-l" style="margin-top:.4rem">${rkS.ranked.length===0?"Tap the most important one first":"Tap #"+(rkS.ranked.length+1)}</div>`;rem.forEach(it=>{ix+=`<div class="ri" onclick="rkTap('${it.id}')">${it.lb}${it.ds?`<span class="rd">${it.ds}</span>`:""}</div>`})}ix+='</div>'}
   if(S.ok&&q.type==="select"){ix='<div class="ix"><p class="ix-l">Tap the one you\u2019d click on</p>';q.opts.forEach(o=>{const c={r:"oc-r",a:"oc-a",g:"oc-g"}[o.cl];ix+=`<button class="oc ${c}" onclick="onIx('${o.lb}: &quot;${o.tx.replace(/'/g,"\\'")}&quot;')"><div class="ol">${o.lb}</div><div class="ot">"${o.tx}"</div></button>`});ix+='</div>'}
